@@ -10,3 +10,4 @@ import Aws.Lambda.Runtime.Common as Reexported
 import Aws.Lambda.Runtime.Configuration as Reexported
 import Aws.Lambda.Runtime.Context as Reexported
 import Aws.Lambda.Setup as Reexported
+import Aws.Lambda.Runtime.StandaloneLambda.Types as Reexported

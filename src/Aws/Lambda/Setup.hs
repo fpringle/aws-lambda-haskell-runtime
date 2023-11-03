@@ -17,6 +17,10 @@ module Aws.Lambda.Setup
     addAPIGatewayHandler,
     addALBHandler,
     runLambdaHaskellRuntime,
+    StandaloneCallback,
+    APIGatewayCallback,
+    ALBCallback,
+    RuntimeContext,
   )
 where
 
