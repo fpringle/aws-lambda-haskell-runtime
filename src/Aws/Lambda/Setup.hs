@@ -5,6 +5,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE TypeFamilies #-}
 {-# OPTIONS_GHC -fno-warn-unused-binds #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 
@@ -21,6 +22,7 @@ module Aws.Lambda.Setup
     APIGatewayCallback,
     ALBCallback,
     RuntimeContext,
+    SpecificRuntimeContext,
   )
 where
 
@@ -64,6 +66,7 @@ import Control.Monad.State as State
   )
 import Data.Aeson (FromJSON)
 import qualified Data.HashMap.Strict as HM
+import Data.Kind
 import qualified Data.Text as Text
 import Data.Typeable (Typeable)
 import GHC.IO.Handle.FD (stderr)
@@ -95,20 +98,44 @@ newtype HandlersM (handlerType :: HandlerType) m context request response error 
       MonadState (Handlers handlerType m context request response error)
     )
 
+{-
 type RuntimeContext (handlerType :: HandlerType) m context request response error =
   ( MonadIO m,
     MonadCatch m,
-    ToStandaloneLambdaResponseBody error,
-    ToStandaloneLambdaResponseBody response,
     ToApiGatewayResponseBody error,
     ToApiGatewayResponseBody response,
     ToALBResponseBody error,
     ToALBResponseBody response,
     FromJSON (ApiGatewayRequest request),
     FromJSON (ALBRequest request),
-    FromJSON request,
+    FromJSON request
     Typeable request
   )
+-}
+
+type RuntimeContext (handlerType :: HandlerType) m context request response error =
+  ( MonadIO m,
+    MonadCatch m,
+    SpecificRuntimeContext handlerType m context request response error,
+    Typeable request
+  )
+
+type family SpecificRuntimeContext (handlerType :: HandlerType) (m :: Type -> Type) context request response error :: Constraint where
+  SpecificRuntimeContext 'StandaloneHandlerType m context request response error =
+    ( ToStandaloneLambdaResponseBody error,
+      ToStandaloneLambdaResponseBody response,
+      FromJSON request
+    )
+  SpecificRuntimeContext 'APIGatewayHandlerType m context request response error =
+    ( ToApiGatewayResponseBody error,
+      ToApiGatewayResponseBody response,
+      FromJSON (ApiGatewayRequest request)
+    )
+  SpecificRuntimeContext 'ALBHandlerType m context request response error =
+    ( ToALBResponseBody error,
+      ToALBResponseBody response,
+      FromJSON (ALBRequest request)
+    )
 
 runLambdaHaskellRuntime ::
   RuntimeContext handlerType m context request response error =>
