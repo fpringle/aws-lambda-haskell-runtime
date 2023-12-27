@@ -98,21 +98,6 @@ newtype HandlersM (handlerType :: HandlerType) m context request response error 
       MonadState (Handlers handlerType m context request response error)
     )
 
-{-
-type RuntimeContext (handlerType :: HandlerType) m context request response error =
-  ( MonadIO m,
-    MonadCatch m,
-    ToApiGatewayResponseBody error,
-    ToApiGatewayResponseBody response,
-    ToALBResponseBody error,
-    ToALBResponseBody response,
-    FromJSON (ApiGatewayRequest request),
-    FromJSON (ALBRequest request),
-    FromJSON request
-    Typeable request
-  )
--}
-
 type RuntimeContext (handlerType :: HandlerType) m context request response error =
   ( MonadIO m,
     MonadCatch m,
