@@ -26,7 +26,7 @@ module Aws.Lambda.Setup
   )
 where
 
-import Aws.Lambda.Runtime (runLambda)
+import Aws.Lambda.Runtime (runLambda, Parsing (..))
 import Aws.Lambda.Runtime.ALB.Types
   ( ALBRequest,
     ALBResponse,
@@ -198,7 +198,7 @@ handlerToCallback dispatcherOptions rawEventObject context handlerToCall =
                 (Left . APIGatewayLambdaError . fmap toApiGatewayResponseBody)
                 (Right . APIGatewayResult . fmap toApiGatewayResponseBody)
                 <$> handler request context
-            Left err -> apiGatewayErr 400 . toApiGatewayResponseBody . Text.pack . show $ err
+            Left err -> apiGatewayErr 400 . toApiGatewayResponseBody . errorMessage $ err
         ALBHandler handler ->
           case decodeObj @(ALBRequest request) rawEventObject of
             Right request ->
