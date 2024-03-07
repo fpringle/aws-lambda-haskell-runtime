@@ -31,6 +31,7 @@ import Data.Aeson
 import Data.Aeson.Types (Parser)
 import qualified Data.Aeson.Key as K
 import qualified Data.Aeson.Types as T
+import qualified Data.ByteString as BS
 import qualified Data.CaseInsensitive as CI
 import Data.HashMap.Strict (HashMap)
 import Data.Text (Text)
@@ -179,6 +180,9 @@ class ToApiGatewayResponseBody a where
 -- We special case Text and String to avoid unneeded encoding which will wrap them in quotes
 instance {-# OVERLAPPING #-} ToApiGatewayResponseBody Text where
   toApiGatewayResponseBody = ApiGatewayResponseBody
+
+instance {-# OVERLAPPING #-} ToApiGatewayResponseBody BS.ByteString where
+  toApiGatewayResponseBody = ApiGatewayResponseBody . T.decodeUtf8
 
 instance {-# OVERLAPPING #-} ToApiGatewayResponseBody String where
   toApiGatewayResponseBody = ApiGatewayResponseBody . T.pack
