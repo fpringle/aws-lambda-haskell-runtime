@@ -65,6 +65,9 @@ data ApiGatewayRequest body = ApiGatewayRequest
 instance {-# OVERLAPPING #-} FromJSON (ApiGatewayRequest Text) where
   parseJSON = parseApiGatewayRequest (.:)
 
+instance {-# OVERLAPPING #-} FromJSON (ApiGatewayRequest BS.ByteString) where
+  parseJSON = parseApiGatewayRequest $ \obj key -> fmap T.encodeUtf8 <$> obj .: key
+
 instance {-# OVERLAPPING #-} FromJSON (ApiGatewayRequest String) where
   parseJSON = parseApiGatewayRequest (.:)
 
