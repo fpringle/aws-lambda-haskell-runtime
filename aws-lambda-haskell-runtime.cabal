@@ -27,12 +27,7 @@ source-repository head
 library
   exposed-modules:
       Aws.Lambda
-  other-modules:
       Aws.Lambda.Runtime
-      Aws.Lambda.Runtime.ALB.Types
-      Aws.Lambda.Runtime.API.Endpoints
-      Aws.Lambda.Runtime.API.Version
-      Aws.Lambda.Runtime.APIGateway.Types
       Aws.Lambda.Runtime.ApiInfo
       Aws.Lambda.Runtime.Common
       Aws.Lambda.Runtime.Configuration
@@ -40,6 +35,11 @@ library
       Aws.Lambda.Runtime.Environment
       Aws.Lambda.Runtime.Error
       Aws.Lambda.Runtime.Publish
+  other-modules:
+      Aws.Lambda.Runtime.ALB.Types
+      Aws.Lambda.Runtime.API.Endpoints
+      Aws.Lambda.Runtime.API.Version
+      Aws.Lambda.Runtime.APIGateway.Types
       Aws.Lambda.Runtime.StandaloneLambda.Types
       Aws.Lambda.Setup
       Aws.Lambda.Utilities
